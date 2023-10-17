@@ -5,19 +5,19 @@
   box-sizing: border-box;
   font-family: 'Poppins', sans-serif;
 }
-
-
 body{
   min-height: 100vh;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  /*align-items: center;*/
+  /*justify-content: center;*/ /*these 2 line are sholdn't be there after below line are added*/
   background: #4070f4;
 }
-
-
 .wrapper{
-  position: relative;
+  /*position: relative;*/
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /*about line are copied from the login*/
   max-width: 430px;
   width: 100%;
   background: #fff;
@@ -75,8 +75,7 @@ form h3{
   font-weight: 500;
   margin-left: 10px;
 }
-
-
+/*modified button part*/
 button[type="submit"] {
   color: #fff;
   letter-spacing: 1px;
@@ -85,11 +84,10 @@ button[type="submit"] {
   cursor: pointer;
   padding: 10px 20px; /* Adjust padding as needed */
 }
-
 button[type="submit"]:hover {
   background: #0e4bf1;
 }
-
+/*modified button part*/
 form .text h3{
  color: #333;
  width: 100%;
