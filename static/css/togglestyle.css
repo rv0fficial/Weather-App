@@ -2,8 +2,8 @@ body{
 	margin: 0;
 	font-family: 'Poppins', sans-serif;
 	min-height: 100vh;
-	display: flex;
-	background: #4070f4;/*When refreshing the page, the original white color of the toggle menu's page background shows up in a blink. So this and the below lines are added.*/
+	/*display: flex; removed because the weather site lost the ability to adjust its size based on the screen size.*/ 
+	background: #5372F0;/*When refreshing the page, the original white color of the toggle menu's page background shows up in a blink. So this and the below lines are added.*/
 }
 .sideMenu {
 	height: 100%;
