@@ -10,7 +10,7 @@ body{
   display: flex;
   /*align-items: center;*/
   /*justify-content: center;*/ /*these 2 line are sholdn't be there after below line are added*/
-  background: #4070f4;
+  background: #5372F0;
 }
 .wrapper{
   /*position: relative;*/
