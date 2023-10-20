@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, url_for, redirect, session
 from pymongo import MongoClient
 import bcrypt
+import re #gpt
 #set app as a Flask instance 
 app = Flask(__name__)
 #encryption relies on secret keys so they could be run
@@ -35,6 +36,21 @@ def dockerMongoDB():
 
 records = dockerMongoDB()
 
+# gpt Email Validation
+def checkEmail(email):
+    emailPattern = r"^[^ ]+@[^ ]+\.[a-z]{2,3}$"
+
+    if not re.match(emailPattern, email):
+        return False
+    return True
+
+# gpt Password Validation
+def createPass(password):
+    passPattern = r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
+
+    if not re.match(passPattern, password):
+        return False
+    return True
 
 #assign URLs to have a particular route 
 @app.route("/", methods=['post', 'get'])
@@ -48,6 +64,19 @@ def index():
         email = request.form.get("email")
         password1 = request.form.get("password1")
         password2 = request.form.get("password2")
+
+        # gpt Email Validation
+        if not checkEmail(email): 
+            message = 'Invalid email format. Please provide a valid email address.'
+            print("Email validation failed:", message)  # Add this line for debugging
+            return render_template('index.html', message=message)
+        
+        # gpt Password Validation
+        if not createPass(password1):
+            message = 'Password must be at least 8 characters long and contain at least one lowercase letter, one uppercase letter, one digit, and one special character.'
+            print("Password validation failed:", message)  # Add this line for debugging
+            return render_template('index.html', message=message)
+
         #if found in database showcase that it's found 
         user_found = records.find_one({"name": user})
         email_found = records.find_one({"email": email})

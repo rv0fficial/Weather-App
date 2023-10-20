@@ -8,29 +8,23 @@
         <p>{{ message }}</p>
     </div>
 {% endif %}
-<!--additionally modified part-->
 
+<!--sign page added-->
 <link href="/static/css/signinstyle.css" rel="stylesheet">
 
 <div class="wrapper">
   <h2>Registration</h2>
   <form action="" method="post">
     <div class="input-box">
-      <!--<label for="Fullname">Full name</label>-->
       <input name="fullname" id="inputFullName" placeholder="Enter full name" required>
-      <!--<small id="fullName" class="form-text text-muted">Please enter your full name (First name and Last name)</small>-->
     </div>
     <div class="input-box">
-      <!--<label for="InputEmail">Email address</label>-->
       <input name="email" id="InputEmail" placeholder="Enter email" required>
-      <!--<small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>-->
     </div>
     <div class="input-box">
-      <!--<label for="InputPassword">Password</label>-->
       <input type="password" name="password1" id="InputPassword" placeholder="Password" required>
     </div>
     <div class="input-box">
-      <!--<label for="InputPassword2">Repeat Password</label>-->
       <input type="password" name="password2" id="InputPassword2" placeholder="Repeat Password" required>
     </div>
     <div class="policy">
@@ -45,6 +39,6 @@
     </div>
   </form>
 </div>
-<!--additionally modified part-->
+<!--sign page added-->
 
 {% endblock %}
