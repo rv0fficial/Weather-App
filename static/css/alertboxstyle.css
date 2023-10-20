@@ -17,6 +17,8 @@
     border-radius: 5px;
     width: 100%;
     background-color: var(--background-color);
+    position: absolute; /* Position the alert absolutely within the container */
+    z-index: 999; /* Set a high z-index value to make it appear on top */
 }
 
 .alert-icon {
