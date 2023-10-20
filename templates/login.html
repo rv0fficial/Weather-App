@@ -4,12 +4,20 @@
 {% block content %}
 
 {% if message  %}
-    <div class="alert alert-secondary" role="alert">
-        <p>{{ message }}</p>
-    </div>
+<!--This part also modified from Alert Box-->
+      <div class="alert alert-error">
+          <div class="alert-icon">
+              <span class="material-symbols-outlined">Oops!</span>
+          </div>
+          <div class="alert-text">
+              {{ message }}
+          </div>
+      </div>
 {% endif %}
+<!--Alert Box styles-->
+<link href="/static/css/alertboxstyle.css" rel="stylesheet">
 
-<!--additionally modified part-->
+<!--Added Login part-->
 <link href="/static/css/loginstyle.css" rel="stylesheet">
 
 <div class="container">
@@ -24,7 +32,10 @@
     </form>
   </div>
 </div>
-<!--additionally modified part-->
+<!--Added Login part-->
+
+<!--Alert Box JavaScript-->
+<script src="/static/js/alertbox.js"></script>
 
 {% endblock %}
 
