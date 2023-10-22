@@ -10,7 +10,7 @@
               <span class="material-symbols-outlined">Oops!</span>
           </div>
           <div class="alert-text">
-              {{ message }}
+              {{ message | safe }} {# Use the | safe filter to properly escape the message #}
           </div>
       </div>
 {% endif %}

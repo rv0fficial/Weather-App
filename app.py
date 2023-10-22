@@ -2,10 +2,19 @@ from flask import Flask, render_template, request, url_for, redirect, session
 from pymongo import MongoClient
 import bcrypt
 import re #gpt
+
+#For Jinja2
+import os 
+from jinja2 import FileSystemLoader, Environment
+
 #set app as a Flask instance 
 app = Flask(__name__)
 #encryption relies on secret keys so they could be run
 app.secret_key = "testing"
+
+# Set the template directory explicitly (Jinja2)
+template_dir = os.path.join(os.path.dirname(__file__), 'templates')
+jinja_env = Environment(loader=FileSystemLoader(template_dir))
 
 # #connect to your Mongo DB database
 def MongoDB():
@@ -59,6 +68,7 @@ def index():
     #if method post in index
     if "email" in session:
         return redirect(url_for("logged_in"))
+    
     if request.method == "POST":
         user = request.form.get("fullname")
         email = request.form.get("email")
@@ -69,26 +79,31 @@ def index():
         if not checkEmail(email): 
             message = 'Invalid email format. Please provide a valid email address.'
             print("Email validation failed:", message)  # Add this line for debugging
-            return render_template('index.html', message=message)
+            #Modify this line to use Jinja2 for rendering the index template
+            return jinja_env.get_template('index.html').render(message=message)
         
         # gpt Password Validation
         if not createPass(password1):
             message = 'Password must be at least 8 characters long and contain at least one lowercase letter, one uppercase letter, one digit, and one special character.'
             print("Password validation failed:", message)  # Add this line for debugging
-            return render_template('index.html', message=message)
+            #Modify this line to use Jinja2 for rendering the index template
+            return jinja_env.get_template('index.html').render(message=message)
 
         #if found in database showcase that it's found 
         user_found = records.find_one({"name": user})
         email_found = records.find_one({"email": email})
         if user_found:
             message = 'There already is a user by that name'
-            return render_template('index.html', message=message)
+            #Modify this line to use Jinja2 for rendering the index template
+            return jinja_env.get_template('index.html').render(message=message)
         if email_found:
             message = 'This email already exists in database'
-            return render_template('index.html', message=message)
+            #Modify this line to use Jinja2 for rendering the index template
+            return jinja_env.get_template('index.html').render(message=message)
         if password1 != password2:
             message = 'Passwords should match!'
-            return render_template('index.html', message=message)
+            #Modify this line to use Jinja2 for rendering the index template
+            return jinja_env.get_template('index.html').render(message=message)
         else:
             #hash the password and encode it
             hashed = bcrypt.hashpw(password2.encode('utf-8'), bcrypt.gensalt())
@@ -101,8 +116,10 @@ def index():
             user_data = records.find_one({"email": email})
             new_email = user_data['email']
             #if registered redirect to logged in as the registered user
-            return render_template('logged_in.html', email=new_email)
-    return render_template('index.html')
+            #Modify this line to use Jinja2 for rendering the logged_in template
+            return jinja_env.get_template('logged_in.html').render(email=new_email)
+    #Modify this line to use Jinja2 for rendering the index template
+    return jinja_env.get_template('index.html').render()
 
 @app.route("/login", methods=["POST", "GET"])
 def login():
@@ -127,17 +144,21 @@ def login():
                 if "email" in session:
                     return redirect(url_for("logged_in"))
                 message = 'Wrong password'
-                return render_template('login.html', message=message)
+                #Modify this line to use Jinja2 for rendering the login template
+                return jinja_env.get_template('login.html').render(message=message)
         else:
             message = 'Email not found'
-            return render_template('login.html', message=message)
-    return render_template('login.html', message=message)
+            # Modify this line to use Jinja2 for rendering the login template
+            return jinja_env.get_template('login.html').render(message=message)
+    # Modify this line to use Jinja2 for rendering the login template
+    return jinja_env.get_template('login.html').render(message=message)
 
 @app.route('/logged_in')
 def logged_in():
     if "email" in session:
         email = session["email"]
-        return render_template('logged_in.html', email=email)
+        # Modify this line to use Jinja2 for rendering the logged_in template
+        return jinja_env.get_template('logged_in.html').render(email=email)
     else:
         return redirect(url_for("login"))
 
