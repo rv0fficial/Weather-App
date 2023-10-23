@@ -8,6 +8,8 @@ services:
       - .:/app
     links:
       - db
+    environment:
+      - FLASK_SECRET_KEY=testing # Set the Flask secret key to "testing"
   db:
     image: mongo:latest
     hostname: test_mongodb

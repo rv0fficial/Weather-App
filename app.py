@@ -12,7 +12,7 @@ from html import escape  # Import escape for HTML input sanitization
 #set app as a Flask instance 
 app = Flask(__name__)
 #encryption relies on secret keys so they could be run
-app.secret_key = "testing"
+#app.secret_key = "testing"
 
 # Set the template directory explicitly (Jinja2)
 template_dir = os.path.join(os.path.dirname(__file__), 'templates')
@@ -72,6 +72,9 @@ def is_valid_input(input_string):
     # Check for disallowed characters in the input string
     disallowed_chars = ['$', ':', '<', '>', '(', ')', '[', ']', '{', '}', ';', '=', '&', '|', '!', '`', '"', "'", '\\', '/', '#', '%', '?', ',']
     return all(char not in input_string for char in disallowed_chars)
+
+# Use the FLASK_SECRET_KEY environment variable, with a default fallback if not set
+app.secret_key = os.environ.get("FLASK_SECRET_KEY", "default_secret_key")
 
 #assign URLs to have a particular route 
 @app.route("/", methods=['post', 'get'])
