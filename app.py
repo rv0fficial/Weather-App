@@ -7,6 +7,8 @@ import re #gpt
 import os 
 from jinja2 import FileSystemLoader, Environment
 
+from html import escape  # Import escape for HTML input sanitization
+
 #set app as a Flask instance 
 app = Flask(__name__)
 #encryption relies on secret keys so they could be run
@@ -45,7 +47,7 @@ def dockerMongoDB():
 
 records = dockerMongoDB()
 
-# gpt Email Validation
+# gpt Email Specific Format Checks
 def checkEmail(email):
     emailPattern = r"^[^ ]+@[^ ]+\.[a-z]{2,3}$"
 
@@ -53,13 +55,23 @@ def checkEmail(email):
         return False
     return True
 
-# gpt Password Validation
+# gpt Password Specific Format Checks
 def createPass(password):
     passPattern = r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
 
     if not re.match(passPattern, password):
         return False
     return True
+
+# Sanitize user inputs
+def sanitize_input(input_string):
+    return escape(input_string)
+
+# Input Validation Function
+def is_valid_input(input_string):
+    # Check for disallowed characters in the input string
+    disallowed_chars = ['$', ':', '<', '>', '(', ')', '[', ']', '{', '}', ';', '=', '&', '|', '!', '`', '"', "'", '\\', '/', '#', '%', '?', ',']
+    return all(char not in input_string for char in disallowed_chars)
 
 #assign URLs to have a particular route 
 @app.route("/", methods=['post', 'get'])
@@ -70,19 +82,36 @@ def index():
         return redirect(url_for("logged_in"))
     
     if request.method == "POST":
-        user = request.form.get("fullname")
-        email = request.form.get("email")
-        password1 = request.form.get("password1")
-        password2 = request.form.get("password2")
+        #Modify the following line for sanitization
+        user = sanitize_input(request.form.get("fullname"))
+        email = sanitize_input(request.form.get("email"))
+        password1 = sanitize_input(request.form.get("password1"))
+        password2 = sanitize_input(request.form.get("password2"))
 
-        # gpt Email Validation
+        # Additional validation for user input
+        invalid_fields = []
+
+        if not is_valid_input(user):
+            invalid_fields.append('User')
+        if not is_valid_input(email):
+            invalid_fields.append('Email')
+        if not is_valid_input(password1):
+            invalid_fields.append('Password 1')
+        if not is_valid_input(password2):
+            invalid_fields.append('Password 2')
+
+        if invalid_fields:
+            invalid_input_message = 'Invalid characters in the following fields: ' + ', '.join(invalid_fields)
+            return jinja_env.get_template('index.html').render(message=invalid_input_message)
+
+        # gpt Email Specific Format Checks
         if not checkEmail(email): 
             message = 'Invalid email format. Please provide a valid email address.'
             print("Email validation failed:", message)  # Add this line for debugging
             #Modify this line to use Jinja2 for rendering the index template
             return jinja_env.get_template('index.html').render(message=message)
         
-        # gpt Password Validation
+        # gpt Password Specific Format Checks
         if not createPass(password1):
             message = 'Password must be at least 8 characters long and contain at least one lowercase letter, one uppercase letter, one digit, and one special character.'
             print("Password validation failed:", message)  # Add this line for debugging
@@ -128,8 +157,26 @@ def login():
         return redirect(url_for("logged_in"))
 
     if request.method == "POST":
-        email = request.form.get("email")
-        password = request.form.get("password")
+        #Modify the following line for input sanitization 
+        email = sanitize_input(request.form.get("email"))
+        password = sanitize_input(request.form.get("password"))
+
+        # Additional validation for user input
+        invalid_fields = []
+
+        if not is_valid_input(email):
+            invalid_fields.append('Email')
+        if not is_valid_input(password):
+            invalid_fields.append('Password')
+
+        if invalid_fields:
+            invalid_input_message = f'Invalid characters in the following fields: {", ".join(invalid_fields)}'
+            return jinja_env.get_template('login.html').render(message=invalid_input_message)
+
+        # gpt Email Specific Format Checks (When the above sanitization & validation parts were implemented,this was also added)
+        if not checkEmail(email):
+            message = 'Invalid email format. Please provide a valid email address.'
+            return jinja_env.get_template('login.html').render(message=message)
 
         #check if email exists in database
         email_found = records.find_one({"email": email})
