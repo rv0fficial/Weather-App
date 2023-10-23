@@ -82,11 +82,10 @@ def index():
         return redirect(url_for("logged_in"))
     
     if request.method == "POST":
-        #Modify the following line for sanitization
-        user = sanitize_input(request.form.get("fullname"))
-        email = sanitize_input(request.form.get("email"))
-        password1 = sanitize_input(request.form.get("password1"))
-        password2 = sanitize_input(request.form.get("password2"))
+        user = request.form.get("fullname")
+        email = request.form.get("email")
+        password1 = request.form.get("password1")
+        password2 = request.form.get("password2")
 
         # Additional validation for user input
         invalid_fields = []
@@ -103,6 +102,12 @@ def index():
         if invalid_fields:
             invalid_input_message = 'Invalid characters in the following fields: ' + ', '.join(invalid_fields)
             return jinja_env.get_template('index.html').render(message=invalid_input_message)
+
+        # After validation, sanitize the input for security
+        user = sanitize_input(user)
+        email = sanitize_input(email)
+
+        # The input is now considered safe for further processing
 
         # gpt Email Specific Format Checks
         if not checkEmail(email): 
@@ -157,9 +162,8 @@ def login():
         return redirect(url_for("logged_in"))
 
     if request.method == "POST":
-        #Modify the following line for input sanitization 
-        email = sanitize_input(request.form.get("email"))
-        password = sanitize_input(request.form.get("password"))
+        email = request.form.get("email")
+        password = request.form.get("password")
 
         # Additional validation for user input
         invalid_fields = []
@@ -172,6 +176,11 @@ def login():
         if invalid_fields:
             invalid_input_message = f'Invalid characters in the following fields: {", ".join(invalid_fields)}'
             return jinja_env.get_template('login.html').render(message=invalid_input_message)
+
+        # After validation, sanitize the input for security
+        email = sanitize_input(email)
+
+        # The input is now considered safe for further processing
 
         # gpt Email Specific Format Checks (When the above sanitization & validation parts were implemented,this was also added)
         if not checkEmail(email):
