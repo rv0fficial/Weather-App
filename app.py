@@ -197,6 +197,11 @@ def login():
             passwordcheck = email_found['password']
             #encode the password and check if it matches
             if bcrypt.checkpw(password.encode('utf-8'), passwordcheck):
+                # Clear the existing session
+                session.clear()
+
+                # Regenerate the session with the user's email
+                
                 session["email"] = email_val
                 return redirect(url_for('logged_in'))
             else:
