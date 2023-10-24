@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, url_for, redirect, session
 from pymongo import MongoClient
 import bcrypt
 import re #gpt
+import secrets #for pw generate a secure random password
 
 #For Jinja2
 import os 
@@ -26,18 +27,38 @@ def MongoDB():
     return records
 # records = MongoDB()
 
+def generate_random_password():
+    # Generate a secure random password
+    return secrets.token_urlsafe(8)  # 8 characters is just an example, adjust as needed
 
 ##Connect with Docker Image###
 def dockerMongoDB():
-    client = MongoClient(host='test_mongodb',
-                            port=27017, 
-                            username='root', 
-                            password='pass',
-                            authSource="admin")
+    # Retrieve MongoDB connection details from environment variables
+    mongo_host = os.environ.get("MONGO_HOST", "test_mongodb")
+    mongo_port = int(os.environ.get("MONGO_PORT", 27017))
+    mongo_user = os.environ.get("MONGO_USER", "my_db_user")
+    mongo_password = os.environ.get("MONGO_PASSWORD", "my_db_password")
+
+    # Create a MongoClient with the retrieved credentials
+    client = MongoClient(
+        host=mongo_host, 
+        port=mongo_port, 
+        username=mongo_user, 
+        password=mongo_password, 
+        authSource="admin"
+    )
+
+    # Connect to the database and collection
     db = client.users
-    pw = "test123"
-    hashed = bcrypt.hashpw(pw.encode('utf-8'), bcrypt.gensalt())
     records = db.register
+
+    # Generate a secure random password
+    random_password = generate_random_password()
+
+    # Hash the random password securely
+    hashed = bcrypt.hashpw(random_password.encode('utf-8'), bcrypt.gensalt())
+
+    # Insert default data with the random password
     records.insert_one({
         "name": "Test Test",
         "email": "test@yahoo.com",
