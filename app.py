@@ -13,6 +13,9 @@ from html import escape  # Import escape for HTML input sanitization
 #set app as a Flask instance 
 app = Flask(__name__)
 
+# Generate a strong, random secret key
+app.secret_key = os.urandom(24)
+
 # Set the template directory explicitly (Jinja2)
 template_dir = os.path.join(os.path.dirname(__file__), 'templates')
 jinja_env = Environment(loader=FileSystemLoader(template_dir))

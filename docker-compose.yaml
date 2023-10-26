@@ -9,7 +9,6 @@ services:
     links:
       - db
     environment:
-      - FLASK_SECRET_KEY=testing # Set the Flask secret key to "testing"
       - MONGO_HOST=test_mongodb
       - MONGO_PORT=27017
       - MONGO_USER=root
