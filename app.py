@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, url_for, redirect, session
 from pymongo import MongoClient
 import bcrypt
-import re #gpt
+import re
 import secrets #for pw generate a secure random password
 
 #For Jinja2
@@ -12,26 +12,16 @@ from html import escape  # Import escape for HTML input sanitization
 
 #set app as a Flask instance 
 app = Flask(__name__)
-#encryption relies on secret keys so they could be run
-#app.secret_key = "testing"
 
 # Set the template directory explicitly (Jinja2)
 template_dir = os.path.join(os.path.dirname(__file__), 'templates')
 jinja_env = Environment(loader=FileSystemLoader(template_dir))
 
-# #connect to your Mongo DB database
-def MongoDB():
-    client = MongoClient("mongodb+srv://admin:<password>@cluster0.cislfvh.mongodb.net/?retryWrites=true&w=majority")
-    db = client.get_database('total_records')
-    records = db.register
-    return records
-# records = MongoDB()
-
 def generate_random_password():
     # Generate a secure random password
     return secrets.token_urlsafe(8)  # 8 characters is just an example, adjust as needed
 
-##Connect with Docker Image###
+# setting up a connection to a MongoDB database
 def dockerMongoDB():
     # Retrieve MongoDB connection details from environment variables
     mongo_host = os.environ.get("MONGO_HOST", "test_mongodb")
@@ -68,7 +58,7 @@ def dockerMongoDB():
 
 records = dockerMongoDB()
 
-# gpt Email Specific Format Checks
+# Email Specific Format Checks
 def checkEmail(email):
     emailPattern = r"^[^ ]+@[^ ]+\.[a-z]{2,3}$"
 
@@ -76,7 +66,7 @@ def checkEmail(email):
         return False
     return True
 
-# gpt Password Specific Format Checks
+# Password Specific Format Checks
 def createPass(password):
     passPattern = r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
 
@@ -133,14 +123,14 @@ def index():
 
         # The input is now considered safe for further processing
 
-        # gpt Email Specific Format Checks
+        # Email Specific Format Checks
         if not checkEmail(email): 
             message = 'Invalid email format. Please provide a valid email address.'
             print("Email validation failed:", message)  # Add this line for debugging
             #Modify this line to use Jinja2 for rendering the index template
             return jinja_env.get_template('index.html').render(message=message)
         
-        # gpt Password Specific Format Checks
+        # Password Specific Format Checks
         if not createPass(password1):
             message = 'Password must be at least 8 characters long and contain at least one lowercase letter, one uppercase letter, one digit, and one special character.'
             print("Password validation failed:", message)  # Add this line for debugging
@@ -206,7 +196,7 @@ def login():
 
         # The input is now considered safe for further processing
 
-        # gpt Email Specific Format Checks (When the above sanitization & validation parts were implemented,this was also added)
+        # Email Specific Format Checks (When the above sanitization & validation parts were implemented,this was also added)
         if not checkEmail(email):
             message = 'Invalid email format. Please provide a valid email address.'
             return jinja_env.get_template('login.html').render(message=message)
