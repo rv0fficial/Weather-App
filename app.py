@@ -89,7 +89,8 @@ def is_valid_input(input_string):
     disallowed_chars = ['$', ':', '<', '>', '(', ')', '[', ']', '{', '}', ';', '=', '&', '|', '!', '`', '"', "'", '\\', '/', '#', '%', '?', ',']
     return all(char not in input_string for char in disallowed_chars)
 
-# Use the FLASK_SECRET_KEY environment variable, with a default fallback if not set
+# Use the FLASK_SECRET_KEY environment variable, 
+# with a default fallback if not set
 app.secret_key = os.environ.get("FLASK_SECRET_KEY", "default_secret_key")
 
 #assign URLs to have a particular route 
@@ -137,7 +138,8 @@ def index():
         
         # Password Specific Format Checks
         if not createPass(password1):
-            message = 'Password must be at least 8 characters long and contain at least one lowercase letter, one uppercase letter, one digit, and one special character.'
+            message = 'Password must be at least 8 characters long and contain at least one lowercase letter, ' \
+                      'one uppercase letter, one digit, and one special character.'
             print("Password validation failed:", message)  # Add this line for debugging
             #Modify this line to use Jinja2 for rendering the index template
             return jinja_env.get_template('index.html').render(message=message)
@@ -201,7 +203,8 @@ def login():
 
         # The input is now considered safe for further processing
 
-        # Email Specific Format Checks (When the above sanitization & validation parts were implemented,this was also added)
+        # Email Specific Format Checks (When the above sanitization 
+        # & validation parts were implemented,this was also added)
         if not checkEmail(email):
             message = 'Invalid email format. Please provide a valid email address.'
             return jinja_env.get_template('login.html').render(message=message)
