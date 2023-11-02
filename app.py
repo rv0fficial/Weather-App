@@ -1,13 +1,15 @@
+# Standard library imports
+import re
+import os #For Jinja2
+
+# Related third-party imports
 from flask import Flask, render_template, request, url_for, redirect, session
 from pymongo import MongoClient
 import bcrypt
-import re
-import secrets #for pw generate a secure random password
+from jinja2 import FileSystemLoader, Environment #For Jinja2
 
-#For Jinja2
-import os 
-from jinja2 import FileSystemLoader, Environment
-
+# Local application/library specific imports
+import secrets  # For generating a secure random password
 from html import escape  # Import escape for HTML input sanitization
 
 #set app as a Flask instance 
