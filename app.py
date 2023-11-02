@@ -23,11 +23,22 @@ template_dir = os.path.join(os.path.dirname(__file__), 'templates')
 jinja_env = Environment(loader=FileSystemLoader(template_dir))
 
 def generate_random_password():
-    # Generate a secure random password
+    """
+    Generate a secure random password.
+
+    Returns:
+        str: A secure random password.
+    """
     return secrets.token_urlsafe(8)  # 8 characters is just an example, adjust as needed
 
 # setting up a connection to a MongoDB database
 def dockerMongoDB():
+    """
+    Set up a connection to a MongoDB database and create a collection for user records.
+
+    Returns:
+        pymongo.collection.Collection: A MongoDB collection for user records.
+    """
     # Retrieve MongoDB connection details from environment variables
     mongo_host = os.environ.get("MONGO_HOST", "test_mongodb")
     mongo_port = int(os.environ.get("MONGO_PORT", 27017))
@@ -65,6 +76,15 @@ records = dockerMongoDB()
 
 # Email Specific Format Checks
 def checkEmail(email):
+    """
+    Check if the provided email follows a specific format.
+
+    Args:
+        email (str): The email address to be checked.
+
+    Returns:
+        bool: True if the email format is valid, False otherwise.
+    """
     emailPattern = r"^[^ ]+@[^ ]+\.[a-z]{2,3}$"
 
     if not re.match(emailPattern, email):
@@ -73,6 +93,15 @@ def checkEmail(email):
 
 # Password Specific Format Checks
 def createPass(password):
+    """
+    Check if the given string is a valid password.
+
+    Args:
+        password (str): The password to be validated.
+
+    Returns:
+        bool: True if the password is valid, False otherwise.
+    """
     passPattern = r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
 
     if not re.match(passPattern, password):
@@ -81,10 +110,28 @@ def createPass(password):
 
 # Sanitize user inputs
 def sanitize_input(input_string):
+    """
+    Sanitize input strings to prevent HTML injection.
+
+    Args:
+        input_string (str): The input string to be sanitized.
+
+    Returns:
+        str: The sanitized input string.
+    """
     return escape(input_string)
 
 # Input Validation Function
 def is_valid_input(input_string):
+    """
+    Check if the input string contains disallowed characters.
+
+    Args:
+        input_string (str): The input string to be validated.
+
+    Returns:
+        bool: True if the input string is valid, False otherwise.
+    """
     # Check for disallowed characters in the input string
     disallowed_chars = ['$', ':', '<', '>', '(', ')', '[', ']', '{', '}', ';', '=', '&', '|', '!', '`', '"', "'", '\\', '/', '#', '%', '?', ',']
     return all(char not in input_string for char in disallowed_chars)
@@ -96,6 +143,12 @@ app.secret_key = os.environ.get("FLASK_SECRET_KEY", "default_secret_key")
 #assign URLs to have a particular route 
 @app.route("/", methods=['post', 'get'])
 def index():
+    """
+    Handle the index page, including user registration and validation.
+
+    Returns:
+        str: HTML content for the index page.
+    """
     message = ''
     #if method post in index
     if "email" in session:
@@ -178,6 +231,12 @@ def index():
 
 @app.route("/login", methods=["POST", "GET"])
 def login():
+    """
+    Handle the login page, including user authentication.
+
+    Returns:
+        str: HTML content for the login page.
+    """
     message = 'Please login to your account'
     if "email" in session:
         return redirect(url_for("logged_in"))
@@ -238,6 +297,12 @@ def login():
 
 @app.route('/logged_in')
 def logged_in():
+    """
+    Handle the logged-in page for authenticated users.
+
+    Returns:
+        str: HTML content for the logged-in page.
+    """
     if "email" in session:
         email = session["email"]
         # Modify this line to use Jinja2 for rendering the logged_in template
@@ -247,6 +312,12 @@ def logged_in():
 
 @app.route("/logout", methods=["POST", "GET"])
 def logout():
+    """
+    Handle user logout.
+
+    Returns:
+        str: HTML content for the signout page.
+    """
     if "email" in session:
         session.pop("email", None)
         return render_template("signout.html")
