@@ -136,10 +136,6 @@ def is_valid_input(input_string):
     disallowed_chars = ['$', ':', '<', '>', '(', ')', '[', ']', '{', '}', ';', '=', '&', '|', '!', '`', '"', "'", '\\', '/', '#', '%', '?', ',']
     return all(char not in input_string for char in disallowed_chars)
 
-# Use the FLASK_SECRET_KEY environment variable, 
-# with a default fallback if not set
-app.secret_key = os.environ.get("FLASK_SECRET_KEY", "default_secret_key")
-
 #assign URLs to have a particular route 
 @app.route("/", methods=['post', 'get'])
 def index():
@@ -323,8 +319,6 @@ def logout():
         return render_template("signout.html")
     else:
         return render_template('index.html')
-
-
 
 
 if __name__ == "__main__":
